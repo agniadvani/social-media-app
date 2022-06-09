@@ -10,4 +10,4 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static("public"))
 app.use("/", router)
 
-app.listen(3000)
+module.exports = app
