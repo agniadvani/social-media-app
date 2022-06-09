@@ -30,13 +30,17 @@ User.prototype.validate = function () {
     if (this.data.username.length > 30) { this.errors.push("Username must be less than 100 characters.") }
 }
 
-User.prototype.login = function (callback) {
-    userCollection.findOne({ username: this.data.username }, (err, user) => {
-        if (user && this.data.password == user.password) {
-            callback(`You are now logged in as ${user.username}.`)
-        } else {
-            callback("You have entered incorrect username/password.")
-        }
+User.prototype.login = function () {
+    return new Promise((resolve, reject) => {
+        userCollection.findOne({ username: this.data.username }).then((user) => {
+            if (user && this.data.password == user.password) {
+                resolve(`You are now logged in as ${user.username}.`)
+            } else {
+                reject("You have entered incorrect username/password.")
+            }
+        }).catch(() => {
+            console.log("Please try again.")
+        })
     })
 }
 User.prototype.register = function () {
