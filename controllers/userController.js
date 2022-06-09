@@ -15,3 +15,10 @@ exports.register = (req, res) => {
         res.send("Congrats, there were no errors.")
     }
 }
+
+exports.login = (req, res) => {
+    let user = new User(req.body)
+    user.login((result) => {
+        res.send(result)
+    })
+}

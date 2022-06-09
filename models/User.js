@@ -30,6 +30,15 @@ User.prototype.validate = function () {
     if (this.data.username.length > 30) { this.errors.push("Username must be less than 100 characters.") }
 }
 
+User.prototype.login = function (callback) {
+    userCollection.findOne({ username: this.data.username }, (err, user) => {
+        if (user && this.data.password == user.password) {
+            callback(`You are now logged in as ${user.username}.`)
+        } else {
+            callback("You have entered incorrect username/password.")
+        }
+    })
+}
 User.prototype.register = function () {
     //Validation
 
