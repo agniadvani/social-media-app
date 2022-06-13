@@ -6,7 +6,7 @@ exports.home = (req, res) => {
     if (req.session.user) {
         res.render("home-logged-in-no-results.ejs", { username: req.session.user.username })
     } else {
-        res.render("home-guest", { errors: req.flash('errors') })
+        res.render("home-guest", { errors: req.flash('errors'), regError: req.flash('regError') })
     }
 }
 
@@ -17,7 +17,10 @@ exports.register = (req, res) => {
 
 
     if (user.errors.length) {
-        res.send(user.errors)
+        user.errors.forEach((error) => {
+            req.flash("regError", error)
+        })
+        req.session.save(() => { res.redirect("/") })
     } else {
         res.send("Congrats, there were no errors.")
         user.register()
