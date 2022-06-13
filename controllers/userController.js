@@ -3,7 +3,11 @@ const { use } = require("../router")
 
 
 exports.home = (req, res) => {
-    res.render("home-guest")
+    if (req.session.user) {
+        res.send(`Hi ${req.session.user.username}`)
+    } else {
+        res.render("home-guest")
+    }
 }
 
 exports.register = (req, res) => {
@@ -20,6 +24,7 @@ exports.register = (req, res) => {
 exports.login = (req, res) => {
     let user = new User(req.body)
     user.login().then((result) => {
+        req.session.user = { favColor: "blue", username: user.data.username }
         res.send(result)
     }).catch((e) => {
         res.send(e)
