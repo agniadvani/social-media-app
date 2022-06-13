@@ -4,7 +4,7 @@ const { use } = require("../router")
 
 exports.home = (req, res) => {
     if (req.session.user) {
-        res.send(`Hi ${req.session.user.username}`)
+        res.render("home-logged-in-no-results.ejs", { username: req.session.user.username })
     } else {
         res.render("home-guest")
     }
