@@ -6,7 +6,7 @@ exports.home = (req, res) => {
     if (req.session.user) {
         res.render("home-logged-in-no-results.ejs", { username: req.session.user.username })
     } else {
-        res.render("home-guest")
+        res.render("home-guest", { errors: req.flash('errors') })
     }
 }
 
@@ -31,7 +31,8 @@ exports.login = (req, res) => {
         req.session.save(() => { res.redirect("/") })
 
     }).catch((e) => {
-        res.send(e)
+        req.flash('errors', e)
+        req.session.save(() => { res.redirect("/") })
     })
 }
 
