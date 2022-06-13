@@ -26,8 +26,8 @@ User.prototype.validate = function () {
     if (!validator.isEmail(this.data.email)) { this.errors.push("Please enter a valid email.") }
     if (this.data.password === "") { this.errors.push("Please enter the password.") }
     if (this.data.password.length > 0 && this.data.password.length < 8) { this.errors.push("Password must be at least 8 characters.") }
-    if (this.data.password.length > 100) { this.errors.push("Password must be less than 100 characters.") }
-    if (this.data.username.length > 0 && this.data.password.length < 8) { this.errors.push("Username must be at least 8 characters.") }
+    if (this.data.password.length > 50) { this.errors.push("Password must be less than 50 characters.") }
+    if (this.data.username.length > 0 && this.data.password.length < 3) { this.errors.push("Username must be at least 3 characters.") }
     if (this.data.username.length > 30) { this.errors.push("Username must be less than 100 characters.") }
 }
 
@@ -45,11 +45,6 @@ User.prototype.login = function () {
     })
 }
 User.prototype.register = function () {
-    //Validation
-
-    this.cleanUp()
-    this.validate()
-
     // Hashing password before storing it into DB
 
     let salt = bcrypt.genSaltSync(10)
@@ -58,6 +53,7 @@ User.prototype.register = function () {
 
     //Storing user in DB
     userCollection.insertOne(this.data)
+
 }
 
 module.exports = User

@@ -12,12 +12,15 @@ exports.home = (req, res) => {
 
 exports.register = (req, res) => {
     let user = new User(req.body)
-    user.register()
+    user.cleanUp()
+    user.validate()
+
 
     if (user.errors.length) {
         res.send(user.errors)
     } else {
         res.send("Congrats, there were no errors.")
+        user.register()
     }
 }
 
@@ -25,8 +28,13 @@ exports.login = (req, res) => {
     let user = new User(req.body)
     user.login().then((result) => {
         req.session.user = { favColor: "blue", username: user.data.username }
-        res.send(result)
+        req.session.save(() => { res.redirect("/") })
+
     }).catch((e) => {
         res.send(e)
     })
+}
+
+exports.logout = (req, res) => {
+    req.session.destroy(() => { res.redirect("/") })
 }
