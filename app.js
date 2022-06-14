@@ -16,15 +16,16 @@ let sessionOptions = session({
 app.set('views', 'views')
 app.set('view engine', 'ejs')
 
-app.use((req, res, next) => {
-    res.locals.user = req.session.user
-    next()
-})
+
 app.use(flash())
 app.use(sessionOptions)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static("public"))
+app.use(function (req, res, next) {
+    res.locals.user = req.session.user
+    next()
+})
 app.use("/", router)
 
 module.exports = app
