@@ -16,6 +16,10 @@ let sessionOptions = session({
 app.set('views', 'views')
 app.set('view engine', 'ejs')
 
+app.use((req, res, next) => {
+    res.locals.user = req.session.user
+    next()
+})
 app.use(flash())
 app.use(sessionOptions)
 app.use(express.json())

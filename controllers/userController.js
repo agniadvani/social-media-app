@@ -4,7 +4,7 @@ const { use } = require("../router")
 
 exports.home = (req, res) => {
     if (req.session.user) {
-        res.render("home-logged-in-no-results.ejs", { username: req.session.user.username, avatar: req.session.user.avatar })
+        res.render("home-logged-in-no-results.ejs")
     } else {
         res.render("home-guest", { errors: req.flash('errors'), regError: req.flash('regError') })
     }
@@ -21,9 +21,6 @@ exports.register = (req, res) => {
         })
         req.session.save(() => { res.redirect("/") })
     })
-
-
-
 }
 
 exports.login = (req, res) => {
@@ -36,6 +33,15 @@ exports.login = (req, res) => {
         req.flash('errors', e)
         req.session.save(() => { res.redirect("/") })
     })
+}
+
+exports.mustBeLoggedIn = (req, res, next) => {
+    if (req.session.user) {
+        next()
+    } else {
+        req.flash('errors', "You must be logged in to access this feature.")
+        req.session.save(() => { res.redirect("/") })
+    }
 }
 
 exports.logout = (req, res) => {

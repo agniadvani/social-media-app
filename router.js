@@ -1,9 +1,15 @@
 const express = require("express")
 const router = express.Router()
-const controller = require("./controllers/userController")
+const userController = require("./controllers/userController")
+const postController = require("./controllers/postController")
 
-router.get("/", controller.home)
-router.post("/register", controller.register)
-router.post("/login", controller.login)
-router.post("/logout", controller.logout)
+// User related routes
+router.get("/", userController.home)
+router.post("/register", userController.register)
+router.post("/login", userController.login)
+router.post("/logout", userController.logout)
+
+// Post Related routes
+router.get("/create-post", userController.mustBeLoggedIn, postController.viewCreatePostScreen)
+
 module.exports = router
