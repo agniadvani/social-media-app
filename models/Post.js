@@ -8,8 +8,8 @@ let Post = function (data, userId) {
 }
 
 Post.prototype.cleanUp = function () {
-    if (typeof (this.data.title) != String) { this.data.title == "" }
-    if (typeof (this.data.body) != String) { this.data.body == "" }
+    if (typeof (this.data.title) != "string") { this.data.title == "" }
+    if (typeof (this.data.body) != "string") { this.data.body == "" }
 
     this.data = {
         title: this.data.title.trim(),
@@ -38,6 +38,33 @@ Post.prototype.create = function () {
 
         } else {
             reject(this.errors)
+        }
+    })
+}
+
+Post.findSingleById = function (id) {
+    return new Promise(async (resolve, reject) => {
+        if (typeof (id) != "string" || !ObjectId.isValid(id)) {
+            reject()
+            return
+        }
+        let posts = await postCollection.aggregate([
+            { $match: { _id: new ObjectId(id) } },
+            { $lookup: { from: "users", localField: "author", foreignField: "_id", as: "authorDocument" } },
+            {
+                $project: {
+                    title: 1,
+                    body: 1,
+                    date: 1,
+                    author: { $arrayElemAt: ["$authorDocument", 0] }
+                }
+            }
+        ]).toArray()
+        if (posts.length) {
+            console.log(posts[0])
+            resolve(posts[0])
+        } else {
+            reject()
         }
     })
 }
