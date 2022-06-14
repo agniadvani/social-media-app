@@ -4,7 +4,7 @@ const { use } = require("../router")
 
 exports.home = (req, res) => {
     if (req.session.user) {
-        res.render("home-logged-in-no-results.ejs", { username: req.session.user.username })
+        res.render("home-logged-in-no-results.ejs", { username: req.session.user.username, avatar: req.session.user.avatar })
     } else {
         res.render("home-guest", { errors: req.flash('errors'), regError: req.flash('regError') })
     }
@@ -12,23 +12,24 @@ exports.home = (req, res) => {
 
 exports.register = (req, res) => {
     let user = new User(req.body)
-    user.register()
-
-
-    if (user.errors.length) {
-        user.errors.forEach((error) => {
+    user.register().then(() => {
+        req.session.user = { username: user.data.username, avatar: user.avatar }
+        req.session.save(() => { res.redirect("/") })
+    }).catch((regErrors) => {
+        regErrors.forEach((error) => {
             req.flash("regError", error)
         })
         req.session.save(() => { res.redirect("/") })
-    } else {
-        res.send("Congrats, there were no errors.")
-    }
+    })
+
+
+
 }
 
 exports.login = (req, res) => {
     let user = new User(req.body)
     user.login().then((result) => {
-        req.session.user = { favColor: "blue", username: user.data.username }
+        req.session.user = { username: user.data.username, avatar: user.avatar }
         req.session.save(() => { res.redirect("/") })
 
     }).catch((e) => {
