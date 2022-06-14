@@ -45,15 +45,17 @@ User.prototype.login = function () {
     })
 }
 User.prototype.register = function () {
+    this.cleanUp()
+    this.validate()
     // Hashing password before storing it into DB
+    if (!this.errors.length) {
+        let salt = bcrypt.genSaltSync(10)
+        let password = bcrypt.hashSync(this.data.password, salt)
+        this.data.password = password
 
-    let salt = bcrypt.genSaltSync(10)
-    let password = bcrypt.hashSync(this.data.password, salt)
-    this.data.password = password
-
-    //Storing user in DB
-    userCollection.insertOne(this.data)
-
+        //Storing user in DB
+        userCollection.insertOne(this.data)
+    }
 }
 
 module.exports = User

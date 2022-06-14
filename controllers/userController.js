@@ -12,8 +12,7 @@ exports.home = (req, res) => {
 
 exports.register = (req, res) => {
     let user = new User(req.body)
-    user.cleanUp()
-    user.validate()
+    user.register()
 
 
     if (user.errors.length) {
@@ -23,7 +22,6 @@ exports.register = (req, res) => {
         req.session.save(() => { res.redirect("/") })
     } else {
         res.send("Congrats, there were no errors.")
-        user.register()
     }
 }
 
