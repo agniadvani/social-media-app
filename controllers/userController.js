@@ -47,3 +47,20 @@ exports.mustBeLoggedIn = (req, res, next) => {
 exports.logout = (req, res) => {
     req.session.destroy(() => { res.redirect("/") })
 }
+
+exports.ifUserExists = (req, res, next) => {
+    User.findUserbyUsername(req.params.username).then((userDoc) => {
+        if (userDoc) {
+            req.userProfile = userDoc
+            next()
+        } else {
+            res.render("404")
+        }
+    }).catch(() => {
+        res.render("404")
+    })
+}
+
+exports.profilePostsScreen = (req, res) => {
+    res.render("profile", { username: req.userProfile.username, avatar: req.userProfile.avatar })
+}

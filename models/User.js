@@ -90,4 +90,20 @@ User.prototype.register = function () {
 User.prototype.getAvatar = function () {
     this.avatar = `https://secure.gravatar.com/avatar/${md5(this.data.email)}`
 }
+
+User.findUserbyUsername = function (username) {
+    return new Promise((resolve, reject) => {
+        userCollection.findOne({ username: username }).then((userDoc) => {
+            userDoc = new User(userDoc, true)
+            userDoc = {
+                _id: userDoc.data._id,
+                username: userDoc.data.username,
+                avatar: userDoc.avatar
+            }
+            resolve(userDoc)
+        }).catch(() => {
+            reject()
+        })
+    })
+}
 module.exports = User
