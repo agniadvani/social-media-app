@@ -3,9 +3,11 @@ const bcrypt = require('bcryptjs')
 const validator = require("validator")
 const md5 = require("md5")
 
-let User = function (data) {
+let User = function (data, getAvatar) {
     this.data = data
     this.errors = []
+    if (getAvatar == undefined) { this.getAvatar = false }
+    if (getAvatar) { this.getAvatar() }
 }
 
 User.prototype.cleanUp = function () {
@@ -56,7 +58,7 @@ User.prototype.login = function () {
             if (user && bcrypt.compareSync(this.data.password, user.password)) {
                 this.data = user
                 this.getAvatar()
-                    resolve(`You are now logged in as ${user.username}.`)
+                resolve(`You are now logged in as ${user.username}.`)
             } else {
                 reject("You have entered incorrect username/password.")
             }
