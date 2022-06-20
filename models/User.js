@@ -63,7 +63,7 @@ User.prototype.login = function () {
                 reject("You have entered incorrect username/password.")
             }
         }).catch(() => {
-            reject("Please try again.")
+            reject("Login problem.")
         })
     })
 }

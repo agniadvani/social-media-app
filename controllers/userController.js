@@ -1,7 +1,5 @@
 const Post = require("../models/Post")
 const User = require("../models/User")
-const { use, post } = require("../router")
-
 
 exports.home = (req, res) => {
     if (req.session.user) {
