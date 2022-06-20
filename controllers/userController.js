@@ -1,5 +1,6 @@
+const Post = require("../models/Post")
 const User = require("../models/User")
-const { use } = require("../router")
+const { use, post } = require("../router")
 
 
 exports.home = (req, res) => {
@@ -62,5 +63,13 @@ exports.ifUserExists = (req, res, next) => {
 }
 
 exports.profilePostsScreen = (req, res) => {
-    res.render("profile", { username: req.userProfile.username, avatar: req.userProfile.avatar })
+    Post.findPostByUserId(req.userProfile._id).then((posts) => {
+        res.render("profile", {
+            username: req.userProfile.username,
+            avatar: req.userProfile.avatar,
+            posts: posts
+        })
+    }).catch(() => {
+        res.send("post not rendered")
+    })
 }
